@@ -1,0 +1,31 @@
+---
+
+- name: Disabling su to root
+  hosts: fihe7oraprdl001
+  become: true
+  gather_facts: no
+
+  tasks:
+
+  - name: Modifying /etc/pam.d/su to disable su to root
+    pamd:
+      name: su
+      type: auth
+      control: sufficient
+      module_path: pam_rootok.so
+      new_type: auth
+      new_control: required
+      new_module_path: pam_wheel.so
+      module_arguments: 'root_only use_uid debug'
+      state: after
+
+  - name: Modifying /etc/pam.d/su if any argument is missing
+    pamd:
+      name: su
+      type: auth
+      control: required
+      module_path: pam_wheel.so
+      module_arguments: 'root_only use_uid debug'
+      state: args_present
+
+...

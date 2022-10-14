@@ -1,0 +1,32 @@
+---
+
+- name: Subscribe to RHSM
+  hosts: dynatrace
+  become: true
+  gather_facts: yes
+
+  tasks:
+
+  - name: Subscribe to RHSM
+    redhat_subscription:
+      state: present
+      username: globalcloud.unix
+      password: Admin@123
+      autosubscribe: true
+      server_proxy_hostname: tcsproxy.prd1.prdroot.net
+      server_proxy_port: '8080'
+
+  - name: Enable RHSM Additional Repositories for RHEL 7
+    rhsm_repository:
+      name: "{{item}}"
+      state: enabled
+    with_items:
+    - rhel-7-server-extras-rpms
+    - rhel-7-server-optional-rpms
+    when: ansible_distribution_major_version == "7"
+
+  - name: Enable RHSM Additional Repositories for RHEL 8
+    rhsm_repository:
+      name: codeready-builder-for-rhel-8-x86_64-rpms
+      state: enabled
+    when: ansible_distribution_major_version == "8"

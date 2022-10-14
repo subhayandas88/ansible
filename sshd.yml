@@ -1,0 +1,10 @@
+---
+- hosts: fihe5patprdl001
+  user: root
+  become: True
+  tasks:
+  - name: "SSHD Restart"
+    service:
+      name: sshd
+      state: restarted
+      enabled: True 

@@ -1,0 +1,44 @@
+---
+
+- name: Creating Users
+  hosts: fihe7oraprdl001
+  become: true
+  gather_facts: no
+
+  tasks:
+
+  - name: Creating user tcsecp
+    user:
+      name: tcsecp
+      uid: '1103'
+      password: "$6$oYrLUvlQv5lqvoFq$xVa86OCRvaHPdnQp43qGZdcYUUiRgnhf8p3e7nMJLM18bTUtKoRWcMV3KYUQxhTNfwLR.fIrQudw7xZqLn043."
+      update_password: on_create
+      comment: "TCS ECP User"
+      expires: '99999'
+
+  - name: Creating user oracle
+    user:
+      name: oracle
+      uid: '502'
+      password: "$6$b41QRPRuHWIS9QYe$ADfUNQ8.r.UDaB/0bBa31UkYUe/6.CdfatsULQavFRBX2fm3HGXiVuzL57xuko5S7co1XGhYhZk/AcpD9QIIp1"
+      update_password: on_create
+      group: oinstall
+      groups: dba
+
+  - name: Creating user device42
+    user:
+      name: device42
+      uid: '1102'
+      password: "$6$NPbyPTc8yuJ49zTS$fgABN.TjrWMjUDCnYJi5pnIHRU1xIOarE6jclObG2gytBewMly15zpY5A4acBWlNyD76LXLoXn0TkfZEODYbh1"
+      update_password: on_create
+      comment: "Device42 User"
+      expires: '99999'
+
+  - name: Creating user bkpadmin
+    user:
+      name: bkpadmin
+      uid: '1101'
+      password: "$6$Wp7stkhM9fSXIqZH$SxZpSfR26TSVl89JgaV4DWrT7q/XZzoTiMmZEUDkEMunvHAhoDcpTgSKxf4RWlOjQVMAtJ5SSMThH26.JOE8n0"
+      update_password: on_create
+      comment: "Backup User"
+      expires: '99999'

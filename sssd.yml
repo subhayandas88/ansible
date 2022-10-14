@@ -1,0 +1,29 @@
+---
+
+- name: "Replacing SSSD service file"
+  hosts: all
+  user: root
+  become: True
+  gather_facts: no
+
+  tasks:
+
+  - name: "Test reachability"
+    ping:
+
+  - name: "Copying SSSD Service File"
+    copy:
+      src: sssd.service
+      dest: /usr/lib/systemd/system/sssd.service
+      mode: '0644'
+      owner: root
+      group: root
+    register: sssd_copy
+  
+  - name: "Refreshing and restarting sssd"
+    systemd:
+      state: restarted
+      daemon-reload: yes
+      name: sssd	
+      enabled: yes 
+    when: sssd_copy.changed

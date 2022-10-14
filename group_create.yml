@@ -1,0 +1,30 @@
+---
+
+- name: Creating Unix Local Groups
+  hosts: fihe7oraprdl001
+  become: true
+  gather_facts: no
+
+  tasks:
+
+  - name: Create group named admin
+    group:
+      name: admin
+      gid: '1101'
+      state: present
+
+  - name: Create group named oinstall
+    group:
+      name: oinstall
+      gid: '503'
+      local: yes
+      state: present
+
+  - name: Create group named dba
+    group:
+      name: dba
+      gid: '504'
+      local: yes
+      state: present
+
+...

@@ -1,0 +1,61 @@
+---
+
+- name: Disable and uninstall NTP as well as install and configure chrony
+  hosts: dynatrace
+  become: true
+  gather_facts: no
+
+  tasks:
+ 
+  - name: Disable NTPD
+    systemd:
+      state: stopped
+      enabled: no
+      masked: yes
+      name: "{{item}}"
+    with_items:
+    - ntpd
+    - ntpdate
+
+  - name: Uninstall NTP Package
+    yum:
+      name: ntp
+      state: absent
+  
+  - name: Installing Chrony Package
+    yum:
+      name: chrony
+      state: present 
+
+  - name: Identifying hostname of the server
+    command: hostname
+    register: host_n
+
+  - name: Copying chrony configuration file HE7 Servers
+    copy:
+      src: /var/lib/awx/projects/disable-selinux/playbook/fihe7_chrony.conf
+      dest: /etc/chrony.conf
+      force: yes
+      mode: '0644'
+      owner: root
+      group: root
+    when: ('dkdc1' in host_n.stdout|lower) or ('fihe7' in host_n.stdout|lower)
+    register: fihe7_file
+
+  - name: Copying chrony configuration file HE5 Servers
+    copy:
+      src: /var/lib/awx/projects/disable-selinux/playbook/fihe5_chrony.conf
+      dest: /etc/chrony.conf
+      force: yes
+      mode: '0644'
+      owner: root
+      group: root
+    when: ('dkdc2' in host_n.stdout|lower) or ('fihe5' in host_n.stdout|lower)
+    register: fihe5_file
+
+  - name: Restarting chronyd service
+    systemd:
+      name: chronyd
+      state: restarted
+      enabled: yes
+    when: fihe7_file.changed or fihe5_file.changed

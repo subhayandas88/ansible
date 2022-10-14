@@ -1,0 +1,56 @@
+---
+#******************************************************************************
+# Role: linux-hardening
+# File: tasks/account_settings.yml
+#******************************************************************************
+- name: Modifying /etc/login.defs
+  hosts: fihe7oraprdl001
+  become: true
+  gather_facts: no
+ 
+  tasks: 
+
+  - name: Set Password Expiration Days
+    lineinfile:
+      path: '/etc/login.defs'
+      regexp: "^PASS_MAX_DAYS"
+      line: "PASS_MAX_DAYS   180"
+      state: present
+
+  - name: Set Password Expiration Days
+    lineinfile:
+      path: '/etc/login.defs'
+      regexp: "^PASS_MIN_DAYS"
+      line: "PASS_MIN_DAYS   0"
+      state: present
+
+  - name: Set Password Minimum Length
+    lineinfile:
+      path: '/etc/login.defs'
+      regexp: "^PASS_MIN_LEN"
+      line: "PASS_MIN_LEN    8"
+      state: present
+
+  - name: Set Password Warning Days
+    lineinfile:
+      path: '/etc/login.defs'
+      regexp: "^PASS_WARN_AGE"
+      line: "PASS_WARN_AGE   28"
+      state: present
+
+  - name: Set Maximum Login Retries
+    lineinfile:
+      path: '/etc/login.defs'
+      regexp: "^LOGIN_RETRIES"
+      line: "LOGIN_RETRIES   5"
+      state: present
+    tags: max_login_retry
+
+  - name: Change Acoount Inactive Days to 90
+    lineinfile:
+      path: /etc/default/useradd
+      regexp: "^INACTIVE="
+      line: "INACTIVE=90"
+      state: present
+
+...

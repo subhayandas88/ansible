@@ -1,0 +1,17 @@
+---
+
+- name: Masking Firewalld Service
+  hosts: fihe7oraprdl001
+  become: true
+  gather_facts: no
+
+  tasks:
+
+  - name: Masking Firewalld
+    systemd:
+      state: stopped
+      enabled: no
+      masked: yes
+      name: firewalld
+
+...

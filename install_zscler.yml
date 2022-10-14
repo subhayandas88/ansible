@@ -1,0 +1,26 @@
+---
+
+- name: Installing Zscaler certificate
+  hosts: fihe7oraprdl001
+  become: true
+  gather_facts: no
+
+  tasks:
+
+  - name: Copying Zscaler Certificate
+    copy:
+      src: /var/www/html/ZscalerRootCertificate-2048-SHA256.crt
+      dest: /etc/pki/ca-trust/source/anchors/ZscalerRootCertificate-2048-SHA256.crt
+      mode: '0644'
+      owner: root
+      group: root
+    notify: install_certificate
+
+  handlers:
+  
+  - name: install_certificate
+    shell: 
+      cmd: '/bin/update-ca-trust enable && /bin/update-ca-trust extract'
+      executable: /bin/bash
+
+...

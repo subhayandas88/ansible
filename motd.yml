@@ -1,0 +1,20 @@
+---
+
+- name: "Configuring motd"
+  hosts: all
+  user: root
+  become: True
+
+  tasks:
+
+  - name: "checking ping reachablility"
+    ping:
+
+  - name: "Replacing motd"
+    template:
+      src: motd.j2
+      dest: /etc/motd
+      mode: '0644'
+      owner: root
+      group: root
+

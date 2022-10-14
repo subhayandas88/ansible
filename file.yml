@@ -1,0 +1,16 @@
+---
+
+- hosts: fihe5patprdl001
+
+  tasks:
+
+  - name: "Test reachability"
+    ping:
+
+  - name: "Copy Files"
+    copy:
+      src: test1.txt
+      dest: /home/tcsuser/test1.txt
+      mode: 644
+      owner: tcsuser
+      group: tcsuser

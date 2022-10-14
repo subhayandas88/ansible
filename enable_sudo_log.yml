@@ -1,0 +1,28 @@
+---
+
+- name: Enable sudo logging
+  hosts: fihe7oraprdl001
+  become: true
+  gather_facts: no
+
+  tasks:
+
+  - name: Modify /etc/sudoers to enable sudo to /var/log/sudo.log
+    lineinfile:
+      path: /etc/sudoers
+      insertafter: 'Defaults   !visiblepw'
+      line: 'Defaults    logfile = /var/log/sudo.log'
+      state: present
+    notify: Generate Log File
+
+  handlers:
+
+  - name: Generate Log File
+    file:
+      path: /var/log/sudo.log
+      mode: '0600'
+      owner: root
+      group: root
+      state: touch
+
+...

@@ -1,0 +1,13 @@
+---
+
+- name: "Executing a scipt in remote server"
+  hosts: fihe5patprdl001
+  gather_facts: no  
+
+  tasks:
+
+  - name: "Checking Server Reachability"
+    ping:
+
+  - name: "Executing Script finally"
+    script: script.sh

@@ -1,0 +1,50 @@
+---
+
+- name: Configure Auditing
+  hosts: dynatrace
+  become: true
+  gather_facts: no
+
+  tasks:
+
+  - name: Modifying /etc/audit/auditd.conf file for max_log_file
+    lineinfile:
+      path: /etc/audit/auditd.conf
+      insertafter: "freq = 50"
+      regexp: "^max_log_file ="
+      line: "max_log_file = 256"
+    register: max_log_file
+
+  - name: Modifying /etc/audit/auditd.conf file for num_logs
+    lineinfile:
+      path: /etc/audit/auditd.conf
+      insertafter: "max_log_file = 256"
+      regexp: "^num_logs ="
+      line: "num_logs = 91"
+    register: num_logs
+
+  - name: Modifying /etc/audit/rules/audit.rules file
+    copy:
+      src: /var/lib/awx/projects/disable-selinux/playbook/audit.rules
+      dest: /etc/audit/rules.d/audit.rules
+      mode: '0600'
+      owner: root
+      group: root
+    register: audit_rules
+
+  - name: Enabling audit daily logrotate
+    copy:
+      src: /var/lib/awx/projects/disable-selinux/playbook/audit.cron
+      dest: /etc/cron.daily/audit.cron
+      mode: '0755'
+      owner: root
+      group: root
+    register: audit_cron
+
+  - name: Restart auditd
+    command: /usr/sbin/service auditd restart
+    args:
+      warn: false
+    when: max_log_file.changed or num_logs.changed or audit_rules.changed or audit_cron.changed
+
+...

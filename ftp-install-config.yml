@@ -1,0 +1,42 @@
+---
+
+- name: Install and Configure vsftpd in Linux
+  hosts: fihe5ivrprdl001
+  become: true
+  gather_facts: no
+
+  tasks:
+  
+  - name: Install vsftpd package
+    yum:
+      name: vsftpd
+      state: present
+    register: install_vsftpd
+
+  - name: Disable anonymous ftp login
+    lineinfile:
+      path: /etc/vsftpd/vsftpd.conf
+      regexp: "^anonymous_enable"
+      line: "anonymous_enable=NO"
+    register: anon_disable
+  
+  - name: Disable FTP root login
+    lineinfile:
+      path: /etc/vsftpd/ftpusers
+      line: "root"
+      insertbefore: "bin"
+   
+  - name: vsftpd restart
+    systemd:
+      name: vsftpd
+      state: restarted
+      enabled: yes
+    when: install_vsftpd.changed or anon_disable.changed
+
+  - name: Start vsftpd if not running
+    systemd:
+      name: vsftpd
+      state: started
+      enabled: yes
+   
+...

@@ -1,0 +1,37 @@
+---
+
+- name: Tuning /etc/profile and /etc/bashrc
+  hosts: fihe7oraprdl001
+  become: true
+  gather_facts: no
+
+  tasks:
+
+  - name: Increasing HISTSIZE to 5000
+    lineinfile:
+      path: /etc/profile
+      regexp: "^HISTSIZE="
+      line: "HISTSIZE=5000"
+      insertafter: "^HOSTNAME"
+
+  - name: Remembering command history
+    lineinfile:
+      path: /etc/bashrc
+      line: "shopt -s cmdhist"
+
+  - name: Changing HISTTIMEFORMAT
+    lineinfile:
+      path: /etc/bashrc
+      line: 'export HISTTIMEFORMAT="%d-%m-%Y %T "'
+
+  - name: Changing HISTFILESIZE
+    lineinfile:
+      path: /etc/bashrc
+      line: "export HISTFILESIZE=5000"
+
+  - name: Changing PROMPT_COMMAND
+    lineinfile:
+      path: /etc/bashrc
+      line: 'export PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND$"\n"}history -a; history -c; history -r"'
+
+...

@@ -1,0 +1,36 @@
+---
+
+- name: Tuning SSH Configuration
+  hosts: fihe7oraprdl001
+  become: true
+
+  tasks:
+
+  - name: Copying SSH Configuration File for RHEL 7
+    copy:
+      src: /var/lib/awx/projects/disable-selinux/playbook/rhel7_sshd_config
+      dest: /etc/ssh/sshd_config
+      mode: '0600'
+      owner: root
+      group: root
+    when: ansible_distribution_major_version == "7"
+    notify: Restart SSHD
+
+  - name: Copying SSH Configuration File for RHEL 8
+    copy:
+      src: /var/lib/awx/projects/disable-selinux/playbook/rhel8_sshd_config
+      dest: /etc/ssh/sshd_config
+      mode: '0600'
+      owner: root
+      group: root
+    when: ansible_distribution_major_version == "8"
+    notify: Restart SSHD
+
+  handlers:
+
+  - name: Restart SSHD
+    systemd:
+      name: sshd
+      state: restarted
+
+...

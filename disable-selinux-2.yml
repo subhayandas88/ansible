@@ -1,0 +1,32 @@
+---
+
+- name: Disable SELinux
+  hosts: fihe7oraprdl001
+  become: true
+  gather_facts: no
+
+  tasks:
+
+  - name: Disable SELinux in /etc/sysconfig/selinux
+    selinux:
+      configfile: /etc/sysconfig/selinux
+      state: disabled
+
+  - name: Disable SELinux in /etc/selinux/config
+    selinux:
+      configfile: /etc/selinux/config
+      state: disabled
+
+  - name: Check SELinux status
+    shell: getenforce
+    args:
+      executable: /bin/bash
+    register: selinux_status
+
+  - name: Make SELinux permissive if SELinux in enforcing state
+    shell: setenforce 0
+    args:
+      executable: /bin/bash
+    when: selinux_status.stdout == "Enforcing"
+
+...

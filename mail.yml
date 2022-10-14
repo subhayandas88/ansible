@@ -1,0 +1,17 @@
+---
+
+- name: Sending Test Mail using Ansible
+  hosts: dynatrace
+  gather_facts: no
+
+  tasks:
+  - name: Sending Test Mail
+    mail:
+      host: 10.59.160.93
+      port: 25
+      from: DKDC1QSTTSTL001@tryg.dk
+      to: tamal.sett@tryg.dk
+      subject: Test Mail
+      body: "Test Mail"
+    delegate_to: localhost
+...

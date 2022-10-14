@@ -1,0 +1,14 @@
+---
+
+- name: Disable SELinux on RHEL
+  hosts: all
+  become: true
+
+  tasks:
+
+  - name: Replacing Entry in SELinux Configuration file
+    lineinfile:
+      path: /etc/sysconfig/selinux
+      regexp: '^SELINUX='
+      line: 'SELINUX=disabled'
+...

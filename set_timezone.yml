@@ -1,0 +1,14 @@
+---
+
+- name: Setting Timezone to Europe/Copenhagen
+  hosts: dynatrace
+  become: true
+  gather_facts: no
+
+  tasks:
+
+  - name: Changing timezone
+    timezone:
+      name: Europe/Copenhagen
+
+...

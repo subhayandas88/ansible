@@ -1,0 +1,26 @@
+---
+
+- name: Rotate /var/log/messages
+  hosts: trfsapsmp03
+  become: true
+  gather_facts: no
+
+  tasks:
+  
+  - name: Modifying /etc/logrotate.d/syslog for /var/log/messages
+    blockinfile:
+      path: /etc/logrotate.d/syslog
+      insertafter: "/var/log/messages"
+      marker: "#{mark} MANUALLY ADDED CONFIG"
+      block: |
+        {
+            weekly
+            rotate 4
+            sharedscripts
+            compress
+            postrotate
+                /bin/kill -HUP `cat /var/run/syslogd.pid 2> /dev/null` 2> /dev/null || true
+            endscript
+        }
+
+...

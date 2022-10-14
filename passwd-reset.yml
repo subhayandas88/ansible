@@ -1,0 +1,21 @@
+--- 
+# ansible document starts with 3 dashes at the top
+
+- hosts: all
+  become: True
+  gather_facts: no
+# declaration of variables
+  vars: 
+    user_name: tataana
+    user_pass: Passw0rd@123
+
+  tasks:
+
+  - name: "Resetting Failed login count"
+    tags: reset_failed_login
+    command: "/usr/bin/chuser unsuccessful_login_count=0 {{ user_name }}"
+
+  - name: "Resetting password of the user"
+    shell: /usr/bin/echo '{{user_name}}:{{user_pass}}' | /usr/bin/chpasswd -c
+    args:
+      executable: /usr/bin/ksh
